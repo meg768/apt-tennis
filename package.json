@@ -1,12 +1,18 @@
 {
-  "name": "apt-tennis",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-      "git-commit": "git add -A && git commit -m '-' && git push"
-
-  },
-  "author": "",
-  "license": "ISC"
+    "name": "apt-tennis",
+    "version": "1.0.0",
+    "description": "",
+    "main": "atp.js",
+    "scripts": {
+        "git-commit": "git add -A && git commit -m '-' && git push",
+        "goto-github": "open https://github.com/meg768/apt-tennis"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^16.4.7",
+        "mysql": "^2.18.1",
+        "yargs": "^17.7.2",
+        "yow": "^1.0.118"
+    }
 }

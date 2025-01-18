@@ -1,4 +1,3 @@
-
 TRUNCATE TABLE tournaments;
 
 INSERT INTO tournaments
@@ -13,3 +12,15 @@ UPDATE tournaments
         surface = (SELECT surface FROM data WHERE tourney_id = tournaments.id ORDER BY tourney_date DESC LIMIT 1),
         level = (SELECT tourney_level FROM data WHERE tourney_id = tournaments.id ORDER BY tourney_date DESC LIMIT 1),
         draw = (SELECT draw_size FROM data WHERE tourney_id = tournaments.id ORDER BY tourney_date DESC LIMIT 1);
+
+UPDATE tournaments
+    SET level = (SELECT (
+    	CASE level 
+    		WHEN 'G' THEN 'Grand Slam' 
+    		WHEN 'O' THEN 'Olympics' 
+    		WHEN 'M' THEN 'Masters' 
+    		WHEN 'F' THEN 'Finals' 
+    		WHEN 'A' THEN 'ATP Tour' 
+    		ELSE level
+    	END
+    ));
