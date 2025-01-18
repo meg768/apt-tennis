@@ -1,10 +1,11 @@
 
-DROP TABLE IF EXISTS import;
-CREATE TABLE import LIKE `2025`;
+TRUNCATE TABLE import;
+TRUNCATE TABLE data;
 
 INSERT INTO import SELECT * FROM `2025`;
 INSERT INTO import SELECT * FROM `2024`;
 INSERT INTO import SELECT * FROM `2023`;
+/*
 INSERT INTO import SELECT * FROM `2022`;
 INSERT INTO import SELECT * FROM `2021`;
 INSERT INTO import SELECT * FROM `2020`;
@@ -18,10 +19,13 @@ INSERT INTO import SELECT * FROM `2013`;
 INSERT INTO import SELECT * FROM `2012`;
 INSERT INTO import SELECT * FROM `2011`;
 INSERT INTO import SELECT * FROM `2010`;
+*/
 
 /* Adjust for cr/lf and junk */
 UPDATE import SET l_bpFaced = REGEXP_REPLACE(l_bpFaced, '[^0-9]+', '');
 UPDATE import SET draw_size = REGEXP_REPLACE(draw_size, '[^0-9]+', '');
+
+UPDATE import SET surface = NULL WHERE surface = '';
 
 UPDATE import SET tourney_date = NULL WHERE tourney_date = '';
 UPDATE import SET match_num = NULL WHERE match_num = '';
@@ -60,8 +64,70 @@ UPDATE import SET l_SvGms = NULL WHERE l_SvGms = '';
 UPDATE import SET l_bpSaved = NULL WHERE l_bpSaved = '';
 UPDATE import SET l_bpFaced = NULL WHERE l_bpFaced = '';
 
-DELETE FROM data;
 INSERT INTO data SELECT * FROM import;
 
-DROP TABLE import;
+TRUNCATE  TABLE import;
 
+/* Players */
+
+TRUNCATE TABLE players;
+
+INSERT INTO players
+	SELECT DISTINCT id, NULL AS name, NULL AS country, NULL AS handed FROM 
+		(SELECT winner_id AS id FROM data UNION SELECT loser_id AS id FROM data) AS data
+        WHERE id <> '';
+
+UPDATE players
+    SET name = (SELECT winner_name FROM data WHERE winner_id = players.id ORDER BY tourney_date DESC LIMIT 1)
+    WHERE name IS NULL;
+
+UPDATE players
+    SET name = (SELECT loser_name FROM data WHERE loser_id = players.id ORDER BY tourney_date DESC LIMIT 1)
+    WHERE name IS NULL;
+
+UPDATE players
+    SET country = (SELECT winner_ioc FROM data WHERE winner_name = players.name ORDER BY tourney_date DESC LIMIT 1)
+    WHERE country IS NULL;
+
+UPDATE players
+    SET country = (SELECT loser_ioc FROM data WHERE loser_name = players.name ORDER BY tourney_date DESC LIMIT 1)
+    WHERE country IS NULL;
+
+UPDATE players
+    SET handed = (SELECT winner_hand FROM data WHERE winner_name = players.name ORDER BY tourney_date DESC LIMIT 1)
+    WHERE handed IS NULL;
+
+UPDATE players
+    SET handed = (SELECT loser_hand FROM data WHERE loser_name = players.name ORDER BY tourney_date DESC LIMIT 1)
+    WHERE handed IS NULL;
+
+
+
+/* Tournaments */
+
+TRUNCATE TABLE tournaments;
+
+INSERT INTO tournaments
+    SELECT DISTINCT 
+        tourney_id, NULL, NULL, NULL, NULL, NULL
+    FROM data WHERE tourney_level <> 'D' ORDER BY tourney_name;
+
+UPDATE tournaments
+    SET 
+        name = (SELECT tourney_name FROM data WHERE tourney_id = tournaments.id ORDER BY tourney_date DESC LIMIT 1),
+        date = (SELECT tourney_date FROM data WHERE tourney_id = tournaments.id ORDER BY tourney_date DESC LIMIT 1),
+        surface = (SELECT surface FROM data WHERE tourney_id = tournaments.id ORDER BY tourney_date DESC LIMIT 1),
+        level = (SELECT tourney_level FROM data WHERE tourney_id = tournaments.id ORDER BY tourney_date DESC LIMIT 1),
+        draw = (SELECT draw_size FROM data WHERE tourney_id = tournaments.id ORDER BY tourney_date DESC LIMIT 1);
+
+UPDATE tournaments
+    SET level = (SELECT (
+    	CASE level 
+    		WHEN 'G' THEN 'Grand Slam' 
+    		WHEN 'O' THEN 'Olympics' 
+    		WHEN 'M' THEN 'Masters' 
+    		WHEN 'F' THEN 'Finals' 
+    		WHEN 'A' THEN 'ATP Tour' 
+    		ELSE level
+    	END
+    ));
