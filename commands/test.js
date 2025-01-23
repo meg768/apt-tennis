@@ -24,14 +24,41 @@ class Test {
     }
 
     async execute(file) {
+        console.log(`Importing ${file}`);
         await this.mysql.execute(file);
     }
+/*
+    download(fileURL, file) {
 
+        return new Promise(() => {})
+        const http = require("http");
+        const fs = require("fs");
+
+        const fileUrl = "http://example.com/file.txt";
+        const destination = "downloaded_file.txt";
+
+        const stream = fs.createWriteStream(file);
+
+        http.get(fileUrl, (response) => {
+            response.pipe(stream);
+            stream.on("finish", () => {
+                stream.close(() => {
+                    console.log("File downloaded successfully");
+                });
+            });
+        }).on("error", (err) => {
+            fs.unlink(file, () => {
+                console.error("Error downloading file:", err);
+            });
+        });        
+    }
+*/
     async run(argv) {
         await this.connect();
         await this.execute("./import/data.sql");
         await this.execute("./import/tournaments.sql");
         await this.execute("./import/players.sql");
+        await this.execute("./import/matches.sql");
         await this.disconnect();
     }
 }
