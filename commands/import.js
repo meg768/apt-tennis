@@ -11,7 +11,7 @@ class Import {
     }
 
     arguments(args) {
-        args.option("loop", { alias: "l", describe: "Run again after specified number of days", default: 7 });
+        args.option("loop", { alias: "l", describe: "Run again after specified number of hours", default: 24 });
         args.help();
     }
 
@@ -33,6 +33,8 @@ class Import {
         return new Promise((resolve, reject) => {
             const http = require("https");
             const fs = require("fs");
+
+            this.log(`Downloading ${file}...`);
 
             http.get(fileURL, (response) => {
                 if (response.statusCode == 200) {
@@ -91,8 +93,6 @@ class Import {
         let src = `https://raw.githubusercontent.com/Tennismylife/TML-Database/refs/heads/master/${file}`;
         let dst = `./downloads/${file}`;
 
-        this.log(`Downloading ${file}...`);
-
         await this.download(src, dst);
         await this.upsertContents(dst);
     }
@@ -102,6 +102,10 @@ class Import {
             try {
                 this.mysql.connect();
 
+                await this.import("2020.csv");
+                await this.import("2021.csv");
+                await this.import("2022.csv");
+                await this.import("2023.csv");
                 await this.import("2024.csv");
                 await this.import("2025.csv");
                 await this.import("ongoing_tourneys.csv");
@@ -114,11 +118,11 @@ class Import {
 
             if (argv.loop) {
                 let loop = argv.loop;
-                this.log(`Waiting for next loop (${loop} minutes)...`);
+                this.log(`Waiting for next loop (${loop} hours)...`);
 
                 setTimeout(() => {
                     work();
-                }, 1000);
+                }, loop * 60 * 60 * 1000);
             }
         };
 

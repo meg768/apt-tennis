@@ -3,11 +3,16 @@ var mysql = require("mysql");
 
 class MySQL {
     constructor(options) {
+        let log = {options};
         this.connection = undefined;
     }
 
+    log() {
+        console.log.apply(this, arguments);
+    }
+
     connect() {
-        console.log(`Connecting to database '${process.env.MYSQL_DATABASE}' at ${process.env.MYSQL_HOST}...`);
+        this.log(`Connecting to database '${process.env.MYSQL_DATABASE}' at ${process.env.MYSQL_HOST}...`);
 
         let options = {};
         options.host = process.env.MYSQL_HOST;
@@ -29,7 +34,7 @@ class MySQL {
 
     disconnect() {
         if (this.connection != undefined) {
-            console.log(`Disconnecting '${process.env.MYSQL_DATABASE}' at ${process.env.MYSQL_HOST}...`);
+            this.log(`Disconnecting '${process.env.MYSQL_DATABASE}' at ${process.env.MYSQL_HOST}...`);
             this.connection.end();
         }
 
