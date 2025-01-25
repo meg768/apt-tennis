@@ -118,7 +118,7 @@ class Import {
 
             if (argv.loop) {
                 let loop = argv.loop;
-                this.log(`Waiting for next loop (${loop} hours)...`);
+                this.log(`Waiting for next run (${loop} days)...`);
 
                 setTimeout(() => {
                     work();
