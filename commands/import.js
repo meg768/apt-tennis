@@ -11,7 +11,7 @@ class Import {
     }
 
     arguments(args) {
-        args.option("loop", { alias: "l", describe: "Run again after specified number of hours", default: 24*7 });
+        args.option("loop", { alias: "l", describe: "Run again after specified number of days", default:7 });
         args.help();
     }
 
@@ -122,7 +122,7 @@ class Import {
 
                 setTimeout(() => {
                     work();
-                }, loop * 60 * 60 * 1000);
+                }, loop * 24 * 60 * 60 * 1000);
             }
         };
 
