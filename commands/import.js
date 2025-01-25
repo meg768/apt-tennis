@@ -11,7 +11,7 @@ class Import {
     }
 
     arguments(args) {
-        args.option("loop", { alias: "l", describe: "Run again after specified number of days", default:7 });
+        args.option("loop", { alias: "l", describe: "Run again after specified number of days", default:3 });
         args.help();
     }
 
