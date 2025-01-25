@@ -1,7 +1,5 @@
-var fs       = require('fs');
-var sprintf  = require('yow/sprintf');
-var isString = require('yow/isString');
-var mysql    = require('mysql');
+var isString = require("yow/isString");
+var mysql = require("mysql");
 
 class MySQL {
     constructor(options) {
@@ -31,9 +29,9 @@ class MySQL {
 
     disconnect() {
         if (this.connection != undefined) {
-	        console.log(`Disconnecting '${process.env.MYSQL_DATABASE}' at ${process.env.MYSQL_HOST}...`);
-			this.connection.end();
-		};
+            console.log(`Disconnecting '${process.env.MYSQL_DATABASE}' at ${process.env.MYSQL_HOST}...`);
+            this.connection.end();
+        }
 
         this.connection = undefined;
     }
@@ -50,15 +48,19 @@ class MySQL {
     }
 
     query(options) {
-        if (isString(options)) {
-            options = { sql: options };
-        }
-
         return new Promise((resolve, reject) => {
-            this.connection.query(options, function (error, results) {
-                if (error) reject(error);
-                else resolve(results);
-            });
+            try {
+                if (isString(options)) {
+                    options = { sql: options };
+                }
+
+                this.connection.query(options, function (error, results) {
+                    if (error) reject(error);
+                    else resolve(results);
+                });
+            } catch (error) {
+                reject(error);
+            }
         });
     }
 
@@ -85,6 +87,5 @@ class MySQL {
         return this.query(sql);
     }
 }
-
 
 module.exports = MySQL;

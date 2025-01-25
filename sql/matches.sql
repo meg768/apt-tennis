@@ -129,17 +129,5 @@ SELECT
 
  
  
-    FROM 
-    (
-        SELECT * 
-        	
-        FROM
-        (
-                SELECT * FROM `2022` UNION
-                SELECT * FROM `2023` UNION
-                SELECT * FROM `2024` UNION
-                SELECT * FROM `2025` 
-    
-        ) AS Foo
-     ) AS import;
+    FROM import;
 

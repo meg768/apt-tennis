@@ -12,7 +12,7 @@ var App = function () {
 
             args.usage("Usage: $0 <command> [options]");
 
-            args.command(require("./commands/test.js"));
+            args.command(require("./commands/import.js"));
 
             args.help();
             args.wrap(null);
