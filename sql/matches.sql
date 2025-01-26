@@ -17,8 +17,8 @@ SELECT
                 WHEN 'O' THEN 'Olympics' 
                 WHEN 'F' THEN 'Finals' 
                 WHEN 'D' THEN 'Davis Cup'
-                WHEN 'G' THEN 'ATP-2000' 
-                WHEN 'M' THEN 'ATP-1000' 
+                WHEN 'G' THEN 'Grand Slam' 
+                WHEN 'M' THEN 'Masters' 
                 WHEN 'A' THEN CASE import.draw_size
                     WHEN '32' THEN 'ATP-250'
                     WHEN '28' THEN 'ATP-250'
@@ -129,5 +129,5 @@ SELECT
 
  
  
-    FROM import;
+    FROM (SELECT * FROM import WHERE tourney_date <> '') AS import;
 
