@@ -99,7 +99,7 @@ class Import {
 
         let matchCount = await this.upsertFile(dst);
 
-        await this.log(`Import of ${matchCount} matches from ${file} completed in ${probe.toString()}.`);
+        await this.log(`Imported ${matchCount} matches from ${file} completed in ${probe.toString()}.`);
     }
 
     async run(argv) {
