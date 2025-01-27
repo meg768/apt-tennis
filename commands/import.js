@@ -84,6 +84,8 @@ class Import {
                 await this.mysql.upsert('import', row);
             }
         }
+
+        return lines.length - 1;
     }
 
     async import(file) {
@@ -94,9 +96,10 @@ class Import {
         await this.log(`Importing ${file}...`);
 
         await this.downloadFile(src, dst);
-        await this.upsertFile(dst);
 
-        await this.log(`Import of ${file} completed in ${probe.toString()}.`);
+        let matchCount = await this.upsertFile(dst);
+
+        await this.log(`Import of ${matchCount} matches from ${file} completed in ${probe.toString()}.`);
     }
 
     async run(argv) {
