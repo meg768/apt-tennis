@@ -27,7 +27,7 @@ class Import {
     }
 
     async execute(file) {
-        this.log(`Executing file ${file}`);
+        await this.log(`Executing file ${file}`);
         await this.mysql.execute(file);
     }
 
@@ -91,12 +91,12 @@ class Import {
         let src = `https://raw.githubusercontent.com/Tennismylife/TML-Database/refs/heads/master/${file}`;
         let dst = `./downloads/${file}`;
 
-        this.log(`Importing ${file}...`);
+        await this.log(`Importing ${file}...`);
 
         await this.downloadFile(src, dst);
         await this.upsertFile(dst);
 
-        this.log(`Import of ${file} completed in ${probe.toString()}.`);
+        await this.log(`Import of ${file} completed in ${probe.toString()}.`);
     }
 
     async run(argv) {
@@ -117,7 +117,7 @@ class Import {
                 await this.import('ongoing_tourneys.csv');
                 await this.execute('./sql/matches.sql');
             } catch (error) {
-                this.log(error.message);
+                await this.log(error.message);
                 console.error(error.stack);
             } finally {
                 this.mysql.disconnect();
@@ -125,7 +125,7 @@ class Import {
 
             if (argv.loop) {
                 let loop = argv.loop;
-                this.log(`Waiting for next run (${loop} days)...`);
+                await this.log(`Waiting for next run (${loop} days)...`);
 
                 setTimeout(() => {
                     work();
