@@ -15,9 +15,13 @@ class Probe {
     }
 
     toString() {
-        if (this.startTime == null) this.start();
+        if (this.startTime == null) {
+            this.start();
+        }
 
-        if (this.stopTime == null) this.stop();
+        if (this.stopTime == null) {
+            this.stop();
+        }
 
         let then = this.startTime;
         let now = this.stopTime;
@@ -31,6 +35,5 @@ class Probe {
         return text;
     }
 }
-
 
 module.exports = Probe;
