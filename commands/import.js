@@ -33,7 +33,6 @@ class Import {
 		} catch (error) {
 		} finally {
 			console.log(message);
-			s;
 		}
 	}
 
