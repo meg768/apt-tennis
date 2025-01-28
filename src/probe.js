@@ -26,9 +26,14 @@ class Probe {
         let then = this.startTime;
         let now = this.stopTime;
         let seconds = Math.round(((now - then) / 1000) * 10) / 10;
+
+        if (seconds > 10) {
+            seconds = Math.round(seconds);
+        }
+
         let text = `${seconds} seconds`;
 
-        if (seconds > 60) {
+        if (seconds > 1) {
             text = `${Math.round(seconds / 60)} minute(s)`;
         }
 
