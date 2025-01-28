@@ -33,7 +33,7 @@ class Probe {
 
         let text = `${seconds} seconds`;
 
-        if (seconds > 1) {
+        if (seconds >= 60) {
             text = `${Math.round(seconds / 60)} minute(s)`;
         }
 
