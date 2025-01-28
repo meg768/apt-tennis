@@ -6,7 +6,7 @@ INSERT INTO matches (date, tournament, level, surface, draw, winner, loser, scor
 
 SELECT 
 
-    CAST(import.tourney_date AS DATE) AS date,
+    CAST(import.tourney_date AS DATE) AS `date`,
     import.tourney_name AS tournament,
     
     

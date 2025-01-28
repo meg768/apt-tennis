@@ -12,8 +12,18 @@ class Import {
 
     arguments(args) {
         args.option('loop', { alias: 'l', describe: 'Run again after specified number of days', type: 'number', default: 3 });
-        args.option('from', { alias: 'f', describe: 'Import from year to current date', type: 'number', default: 2020 });
-        args.option('clean', { alias: 'c', describe: 'Remove previous imports', type: 'boolean', default: false });
+        args.option('from', {
+            alias: 'f',
+            describe: 'Import from year to current date',
+            type: 'number',
+            default: 2020
+        });
+        args.option('clean', {
+            alias: 'c',
+            describe: 'Remove previous imports',
+            type: 'boolean',
+            default: false
+        });
         args.help();
     }
 
@@ -106,6 +116,9 @@ class Import {
         let work = async () => {
             try {
                 this.mysql.connect();
+                let probe = new Probe();
+
+                await this.log(`Starting import...`);
 
                 if (argv.clean) {
                     await this.mysql.query('TRUNCATE TABLE import');
@@ -119,6 +132,7 @@ class Import {
 
                 await this.import('ongoing_tourneys.csv');
                 await this.execute('./sql/matches.sql');
+                await this.log(`Import finished in ${probe.toString()}.`);
             } catch (error) {
                 await this.log(error.message);
                 console.error(error.stack);
@@ -128,11 +142,14 @@ class Import {
 
             if (argv.loop) {
                 let loop = argv.loop;
-                await this.log(`Waiting for next run (${loop} days)...`);
+                await this.log(`Waiting for next run in ${loop} days.`);
 
-                setTimeout(() => {
-                    work();
-                }, loop * 24 * 60 * 60 * 1000);
+                setTimeout(
+                    () => {
+                        work();
+                    },
+                    loop * 24 * 60 * 60 * 1000
+                );
             }
         };
 
